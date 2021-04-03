@@ -1,0 +1,209 @@
+--1
+SELECT s.name,s.surname, h.name
+FROM student s,
+	student_hobby sh,
+	hobby h
+WHERE s.id = sh.student_id AND h.id = sh.hobby_id
+--2
+SELECT st.* 
+FROM student st,
+	student_hobby sh
+WHERE sh.date_finish is null and st.id = sh.student_id
+GROUP BY st.id,sh.date_finish, sh.date_start,sh.id
+ORDER BY sh.date_start LIMIT 1;
+--3
+SELECT DISTINCT s.score, s.name, s.surname, s.date_birth
+FROM student s
+INNER JOIN
+	(
+		SELECT SUM(h.risk) as risk_sum, sh.student_id
+		FROM hobby h, 
+			student_hobby sh
+		WHERE h.id= sh.hobby_id
+		GROUP BY sh.student_id
+	)t
+ON s.id = t.student_id
+AND t.risk_sum > 0.9
+WHERE s.score > 
+	(
+		SELECT AVG(score)::numeric(3,2)
+		FROM student
+	);
+
+--4
+SELECT s.id, s.name, s.surname, t.htime
+FROM student s
+INNER JOIN
+	(
+		SELECT sh.student_id, 12 * extract(year from age(date_finish, date_start)) as htime
+		FROM student_hobby sh, hobby h
+		WHERE h.id = sh.hobby_id AND sh.date_finish IS NOT NULL		
+	)t
+ON s.id = t.student_id
+
+--5
+SELECT s.id, s.name, s.surname, s.n_group, s.date_birth
+FROM student s
+INNER JOIN
+	(
+		SELECT COUNT(sh.hobby_id), sh.student_id
+		FROM hobby h, 
+			student_hobby sh
+		WHERE h.id = sh.hobby_id AND sh.date_finish IS NULL
+		GROUP BY sh.student_id
+	)t
+ON s.id = t.student_id
+WHERE (extract(year from age(now(), s.date_birth))) >= 20 
+
+--6
+SELECT AVG(s.score)::numeric(3,2), s.n_group
+FROM student s
+INNER JOIN
+	(
+		SELECT COUNT(sh.hobby_id), sh.student_id
+		FROM hobby h, 
+			student_hobby sh
+		WHERE h.id= sh.hobby_id AND sh.date_finish IS NULL
+		GROUP BY sh.student_id
+	)t
+ON s.id = t.student_id
+GROUP BY s.n_group
+
+--7
+SELECT s.name, h.name, h.risk, extract(month from (justify_days(now() - sh.date_start))) AS time_month
+FROM hobby h, student_hobby sh, student s
+WHERE sh.hobby_id = h.id AND s.id = sh.student_id
+	AND sh.date_start =
+(
+	SELECT MIN(date_start)
+	FROM student_hobby
+	WHERE date_finish IS NULL
+)
+
+--8
+SELECT h.name
+FROM hobby h, student_hobby sh
+INNER JOIN
+(
+	SELECT s.id
+	FROM student s
+	WHERE s.score = 
+	(
+		SELECT MAX(score)
+		FROM student
+	)
+)t
+ON sh.id = t.id
+WHERE h.id = sh.hobby_id
+
+--9
+SELECT h.name
+FROM hobby h, student_hobby sh
+INNER JOIN
+(
+	SELECT s.id
+	FROM student s
+	WHERE s.score BETWEEN 3 AND 4 AND s.n_group BETWEEN 2000 AND 3000
+)t
+ON sh.student_id = t.id
+WHERE sh.hobby_id = h.id AND sh.date_finish IS NULL
+--10
+SELECT DISTINCT chr(ascii(s.n_group::varchar)) AS course, t.count
+FROM student s
+INNER JOIN
+(
+	SELECT tt.count, chr(ascii(n_group::varchar)) AS course, id
+	FROM student,
+	(
+		SELECT COUNT(student_id), student_id
+		FROM student_hobby
+		WHERE date_finish IS NULL
+		GROUP BY student_id
+	)tt
+	WHERE id = tt.student_id
+)t
+ON s.id = t.id
+WHERE 2 * t.count::numeric(1,0) >  
+(
+	SELECT COUNT(tmp.course), tmp.course
+	FROM 
+	(
+		SELECT chr(ascii(n_group::varchar)) AS course
+		FROM student
+	)tmp
+	GROUP BY tmp.course
+)
+
+--11
+SELECT st.n_group
+FROM student st
+WHERE (SELECT COUNT(id) from student where n_group = st.n_group)*0.6 <= (SELECT COUNT(id) from student where n_group = st.n_group AND score >= 4)
+GROUP BY st.n_group
+--12
+
+--13
+берёшь LEFT JOIN и цепляешься за нулевые значения в сш
+
+--14
+CREATE OR REPLACE VIEW stnow5 AS
+SELECT s.*
+FROM student s
+INNER JOIN
+(
+	SELECT DISTINCT student_id AS id
+	FROM student_hobby
+	WHERE date_finish IS NULL AND extract(year from (justify_days(now() - date_start))) >= 5
+)t
+ON s.id = t.id
+
+--15
+CREATE OR REPLACE count_h AS
+SELECT h.name, t.count
+FROM hobby h
+INNER JOIN
+(
+	SELECT COUNT(tmp.s_id), tmp.h_id
+	FROM
+	(
+		SELECT hobby_id as h_id, student_id as s_id
+		FROM student_hobby
+	)tmp
+	GROUP BY tmp.h_id
+)t
+ON h.id = t.h_id
+
+--16
+CREATE OR REPLACE VIEW most_pop_hob_id AS
+SELECT h.id
+FROM hobby h, count_h as ch
+WHERE h.name = ch.name
+ORDER BY ch.count DESC LIMIT 1
+--17
+CREATE OR REPLACE VIEW most_pop_hob_id AS
+SELECT h.id
+FROM hobby h, count_h as ch
+WHERE h.name = ch.name
+ORDER BY ch.count DESC LIMIT 1
+--18
+CREATE OR REPLACE VIEW max_r AS
+SELECT MAX(risk)
+FROM hobby;
+
+SELECT id
+FROM hobby, max_r
+WHERE risk = max LIMIT 3
+
+--19
+CREATE OR REPLACE VIEW max_htime AS
+SELECT MAX(htime)
+FROM(
+	SELECT NOW()::date - sh.date_start::date as htime, sh.student_id
+	FROM student_hobby sh
+	)as hobt
+	
+;SELECT s.*
+FROM student s, student_hobby sh, max_htime mh
+WHERE s.id = sh.student_id AND  NOW()::date - sh.date_start::date = mh.max
+LIMIT 10
+
+--20
