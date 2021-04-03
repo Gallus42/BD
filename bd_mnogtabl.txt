@@ -194,6 +194,7 @@ FROM hobby, max_r
 WHERE risk = max LIMIT 3
 
 --19
+
 CREATE OR REPLACE VIEW max_htime AS
 SELECT MAX(htime)
 FROM(
@@ -201,9 +202,13 @@ FROM(
 	FROM student_hobby sh
 	)as hobt
 	
-;SELECT s.*
+;
+CREATE OR REPLACE VIEW st_max_htime AS
+SELECT s.*
 FROM student s, student_hobby sh, max_htime mh
 WHERE s.id = sh.student_id AND  NOW()::date - sh.date_start::date = mh.max
 LIMIT 10
 
 --20
+SELECT DISTINCT n_group
+FROM st_max_htime
