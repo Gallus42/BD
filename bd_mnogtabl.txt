@@ -140,10 +140,34 @@ FROM student st
 WHERE (SELECT COUNT(id) from student where n_group = st.n_group)*0.6 <= (SELECT COUNT(id) from student where n_group = st.n_group AND score >= 4)
 GROUP BY st.n_group
 --12
-
+SELECT COUNT(t.hobby_id), t.course
+FROM student s
+INNER JOIN
+(
+	SELECT tt.hobby_id, chr(ascii(n_group::varchar)) AS course, id
+	FROM student
+	INNER JOIN
+	(
+		SELECT hobby_id, student_id
+		FROM student_hobby
+		WHERE date_finish IS NULL
+	)tt
+	ON id = tt.student_id
+)t
+ON s.id = t.id
+GROUP BY t.course
 --13
-берёшь LEFT JOIN и цепляешься за нулевые значения в сш
-
+SELECT s.score, s.id, s.surname, s.name, s.date_birth, chr(ascii(s.n_group::varchar)) AS course
+FROM student s
+LEFT JOIN
+(
+	SELECT sh.hobby_id as h_id, sh.student_id as id
+	FROM student_hobby as sh
+	
+)t
+ON s.id = t.id
+WHERE s.score > 4 AND t.h_id IS NULL
+ORDER BY course , s.date_birth DESC
 --14
 CREATE OR REPLACE VIEW stnow5 AS
 SELECT s.*
@@ -212,3 +236,12 @@ LIMIT 10
 --20
 SELECT DISTINCT n_group
 FROM st_max_htime
+--21
+CREATE OR REPLACE VIEW z21 AS
+SELECT s.id, s.name, s.surname, s.score
+FROM student s
+ORDER BY s.score DESC
+--22
+
+--23
+
