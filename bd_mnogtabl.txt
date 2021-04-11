@@ -245,3 +245,62 @@ ORDER BY s.score DESC
 
 --23
 
+--24
+
+--25
+CREATE OR REPLACE VIEW popular_hobby AS
+SELECT h.name, h.id
+FROM hobby h, count_h ch
+WHERE ch.name = h.name AND ch.count = 
+(
+SELECT MAX(count)
+FROM count_h
+)
+--26
+CREATE OR REPLACE VIEW upd_view AS
+SELECT id, surname, name, n_group 
+FROM student
+WITH CHECK OPTION
+--27
+CREATE OR REPLACE VIEW let_score AS
+SELECT chr(ascii(name)) as letter, score
+FROM student
+ORDER BY letter
+
+SELECT letter, MAX(score) as mx_score, MIN(score) as mn_score, AVG(score)::numeric(3,2) as avg_score
+FROM let_score
+GROUP BY letter
+--28
+--29
+--30
+--31
+--32
+SELECT s.name, s.surname, s.n_group
+FROM student s, student_hobby sh
+WHERE s.id = sh.student_id
+--33
+--34
+CREATE OR REPLACE VIEW surname_sharps AS
+SELECT left(surname||'##########', 10)-- as surname
+FROM student;
+--35
+Select *
+From surname_sharps;
+SELECT trim(both '#' from s.left)
+FROM surname_sharps s
+--36
+SELECT ('5-01-2018'::date -'4-01-2018'::date)
+--37
+--38
+SELECT date_trunc('century', now())::date as century, 
+to_char(now(), 'WW') as week, 
+to_char((now() - '01-01-2021'::date), 'DD')::integer + 1 as day
+--39
+SELECT s.name, s.surname, h.name,
+CASE
+	WHEN date_finish IS NOT NULL THEN 'Занимается'
+	ELSE 'Закончил'
+	END as Do_NDo
+FROM student s, hobby h, student_hobby sh
+WHERE s.id = sh.student_id AND h.id = sh.hobby_id
+--40
