@@ -1,0 +1,4 @@
+-- Вывод всех комментариев
+Select u.name, s.name, c.comment
+from web_user as u, song as s, commented_song as c
+Where c.user_id = u.id and c.song_id = s.id

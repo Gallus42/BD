@@ -15,7 +15,36 @@ Insert into web_user values ( 13,'Mihail Gorshenev', 'Kukla' );
 Insert into web_user values ( 14,'Victor Tsoi', 'Long_night' );
 Insert into web_user values ( 15,'Dave Groll', 'pretender' );
 
+--Moder Insert
+Insert into web_user values ( 1,'Gallus' );
 --Song Inserts
+Insert into add_song values ( 1,'Всё как у людей', 'Гражданская оборона','Вот и всё что было-
+Не было и нету.
+Все слои размокли.  
+Все слова истлели.
+      
+           Всё как у людей.
+
+В стоптанных ботинках
+Годы и окурки
+В стираных карманах 
+Паспорта и пальцы
+
+           Всё как у людей.
+
+Резвые колеса
+Прочные постройки
+Новые декреты 
+Братские могилы
+   
+           Всё как у людей.
+  
+Вот и всё что было-
+Не было и нету.
+Правильно и ясно. 
+Здорово и вечно.
+   
+           Всё как у людей.',5 );
 Insert into song values ( 1,'Всё как у людей', 'Гражданская оборона','Вот и всё что было-
 Не было и нету.
 Все слои размокли.  
@@ -42,4 +71,8 @@ Insert into song values ( 1,'Всё как у людей', 'Гражданска
 Правильно и ясно. 
 Здорово и вечно.
    
-           Всё как у людей.' );
+           Всё как у людей.',1 );
+
+
+--Comments Inserts
+Insert into commented_song values ( 2, 1, 'У меня лучше получилось' );
