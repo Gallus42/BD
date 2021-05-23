@@ -1,0 +1,45 @@
+--Web_user inserts
+Insert into web_user values ( 1,'Mike_Portnoy', 'eeeerock' );
+Insert into web_user values ( 2,'Vanya_Noize', 'hiphopera' );
+Insert into web_user values ( 3,'Hugh Laurie', 'Hallelujah' );
+Insert into web_user values ( 4,'Buddy Rich', 'Drums' );
+Insert into web_user values ( 5,'Egor Letov', 'GROB' );
+Insert into web_user values ( 6,'Ortem Horev', 'Anacondaz' );
+Insert into web_user values ( 7,'SEGA', 'Anacondaz' );
+Insert into web_user values ( 8,'Till Lindeman', 'Cowboy' );
+Insert into web_user values ( 9,'Notorious', 'BIG' );
+Insert into web_user values ( 10,'Serj Tankjan', 'Sky' );
+Insert into web_user values ( 11,'Mykka', 'Kare' );
+Insert into web_user values ( 12,'Gogol Bordello', 'Imigrant' );
+Insert into web_user values ( 13,'Mihail Gorshenev', 'Kukla' );
+Insert into web_user values ( 14,'Victor Tsoi', 'Long_night' );
+Insert into web_user values ( 15,'Dave Groll', 'pretender' );
+
+--Song Inserts
+Insert into song values ( 1,'Всё как у людей', 'Гражданская оборона','Вот и всё что было-
+Не было и нету.
+Все слои размокли.  
+Все слова истлели.
+      
+           Всё как у людей.
+
+В стоптанных ботинках
+Годы и окурки
+В стираных карманах 
+Паспорта и пальцы
+
+           Всё как у людей.
+
+Резвые колеса
+Прочные постройки
+Новые декреты 
+Братские могилы
+   
+           Всё как у людей.
+  
+Вот и всё что было-
+Не было и нету.
+Правильно и ясно. 
+Здорово и вечно.
+   
+           Всё как у людей.' );
